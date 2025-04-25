@@ -1360,7 +1360,7 @@ class LSTM(Layer):
             self.add_output_variable(
                 state_shape, state_dims, out_name=self.outputs[2], var_name='layer{index}_c', type_name='layer{index}_c_t'
             )
-            
+
         # weights
         self.add_weights()
 
@@ -1379,7 +1379,7 @@ class LSTM(Layer):
 
 
 class BLSTM(LSTM):
-    _expected_attributes = [
+    _expected_attributes = LSTM._expected_attributes + [
         WeightAttribute('weight_b'),
         WeightAttribute('bias_b'),
         WeightAttribute('recurrent_weight_b'),
@@ -1390,10 +1390,11 @@ class BLSTM(LSTM):
         TypeAttribute('recurrent_bias_b'),
         ChoiceAttribute('merge_mode', ['sum', 'mul', 'concat', 'ave'], configurable=False, default='concat'),
     ]
+
     def initialize(self):
         super().initialize()
-        
-        #Add backward layer parameters
+
+        # Add backward layer parameters
         # weights
         self.add_weights_variable(name='weight_b', var_name='w_b{index}')
 
@@ -1464,7 +1465,7 @@ class GRU(Layer):
 
 
 class BGRU(GRU):
-    _expected_attributes = [
+    _expected_attributes = GRU._expected_attributes + [
         WeightAttribute('weight_b'),
         WeightAttribute('bias_b'),
         WeightAttribute('recurrent_weight_b'),
@@ -1475,10 +1476,11 @@ class BGRU(GRU):
         TypeAttribute('recurrent_bias_b'),
         ChoiceAttribute('merge_mode', ['sum', 'mul', 'concat', 'ave'], configurable=False, default='concat'),
     ]
+
     def initialize(self):
         super().initialize()
-        
-        #Add backward layer parameters
+
+        # Add backward layer parameters
         # weights
         self.add_weights_variable(name='weight_b', var_name='w_b{index}')
 
