@@ -1378,8 +1378,8 @@ class LSTM(Layer):
             self.add_weights_variable(name='recurrent_bias', var_name='br{index}', data=recurrent_bias)
 
 
-class BLSTM(LSTM):
-    _expected_attributes = LSTM._expected_attributes + [
+class BidirectionalLSTM(LSTM):
+    _expected_attributes = [
         WeightAttribute('weight_b'),
         WeightAttribute('bias_b'),
         WeightAttribute('recurrent_weight_b'),
@@ -1464,8 +1464,8 @@ class GRU(Layer):
         self.add_weights_variable(name='recurrent_bias', var_name='br{index}')
 
 
-class BGRU(GRU):
-    _expected_attributes = GRU._expected_attributes + [
+class BidirectionalGRU(GRU):
+    _expected_attributes = [
         WeightAttribute('weight_b'),
         WeightAttribute('bias_b'),
         WeightAttribute('recurrent_weight_b'),
@@ -1739,8 +1739,8 @@ layer_map = {
     'SimpleRNN': SimpleRNN,
     'LSTM': LSTM,
     'GRU': GRU,
-    'BLSTM': BLSTM,
-    'BGRU': BGRU,
+    'BidirectionalLSTM': BidirectionalLSTM,
+    'BidirectionalGRU': BidirectionalGRU,
     'QSimpleRNN': SimpleRNN,
     'QLSTM': LSTM,
     'QGRU': GRU,
