@@ -49,3 +49,41 @@ class ValidateResourceUnrolledStrategy(OptimizerPass):
             f'WARNING: "ResourceUnrolled" strategy in "{node.name}" ({node.class_name}) may have unexpected II in'
             'Vitis backend.\nVerify that the final design satisfies the latency/II constraints.'
         )
+
+
+class ValidateBidirectionalRnnMergeMode(OptimizerPass):
+    _unrolled_layer_cls = ['BidirectionalGRU', 'BidirectionalLSTM']
+
+    def match(self, node):
+        is_bidirectional_rnn_layer = (
+            len([layer_cls for layer_cls in self._unrolled_layer_cls if layer_cls in node.class_name]) > 0
+        )
+        is_merge_mode_not_concat = node.get_attr('merge_mode', 'concat') != 'concat'
+
+        return is_bidirectional_rnn_layer and is_merge_mode_not_concat
+
+    def transform(self, model, node):
+        merge_mode = node.get_attr('merge_mode', 'concat')
+        print(
+            f'WARNING: "{merge_mode}" merge mode in "{node.name}" ({node.class_name}) is not supported in Vitis backend. '
+            'Switching to "concat" merge mode.'
+        )
+        node.set_attr('merge_mode', 'concat')
+
+
+'''
+class ValidateBidirectionalRnnBackwardLayer(OptimizerPass):
+    _unrolled_layer_cls = ['BidirectionalGRU', 'BidirectionalLSTM']
+
+    def match(self, node):
+        is_bidirectional_rnn_layer = len([layer_cls for layer_cls in self._unrolled_layer_cls if layer_cls in node.class_name]) > 0  # noqa: E501
+        is_backward_layer_different = node.get_attr('merge_mode', False).lower()
+
+        return is_bidirectional_rnn_layer and is_backward_layer_different
+
+    def transform(self, model, node):
+        print(
+            f'WARNING: Bacward layer implementation different from forward layer in "{node.name}" ({node.class_name})'
+            'is not supported in Vitis backend.\nForward layer architecture will be used for backward layer as well.'
+        )
+'''
