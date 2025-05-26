@@ -286,11 +286,11 @@ class BidirectionalRecurrentConfigTemplate(LayerConfigTemplate):
         act_params['type'] = node.get_attr('activation')
         recr_act_params['type'] = node.get_attr('recurrent_activation')
         if node.get_attr('return_sequences'):
-            act_params['n_in'] = node.get_output_variable().shape[1]
-            recr_act_params['n_in'] = node.get_output_variable().shape[1] * (n_recr_mult - 1)
+            act_params['n_in'] = node.get_output_variable().shape[1] // 2
+            recr_act_params['n_in'] = node.get_output_variable().shape[1] * (n_recr_mult - 1) // 2
         else:
-            act_params['n_in'] = node.get_output_variable().shape[0]
-            recr_act_params['n_in'] = node.get_output_variable().shape[0] * (n_recr_mult - 1)
+            act_params['n_in'] = node.get_output_variable().shape[0] // 2
+            recr_act_params['n_in'] = node.get_output_variable().shape[0] * (n_recr_mult - 1) // 2
 
         act_config = self.act_template.format(**act_params)
         recr_act_config = self.recr_act_template.format(**recr_act_params)
