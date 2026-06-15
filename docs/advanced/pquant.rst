@@ -19,7 +19,7 @@ PQuantML is a hardware-aware model compression framework supporting:
 PQuantML enables efficient deployment of compact neural networks on resource-constrained hardware such as FPGAs and embedded accelerators.
 
 
-Key Features
+Key Characteristics
 ------------
 
   - **Joint Quantization + Pruning**: Combine bit-width reduction with structured pruning.
@@ -75,15 +75,13 @@ Key Features
 
    ... # Training, evaluation, and anything else you want to do with the model
 
-   hls_config = config_from_pytorch_model(
-      PQmodel,
-      input_shape=input_shape,
-      )
+   hls_config = {'Model': {'ChannelsLastConversion': 'full'}, 'InputShape': input_shape,}
    hls_model = convert_from_pytorch_model(PQmodel, ...)
    # Model-wise precision propagation is done automatically for PQuantML models for bit-exactness
    # Do NOT pass precision config if you don't know what you are doing
+   # Note: Model-wise precision propagation needs ChannelsLastConversion to be active in order to work correctly with PyTorch models
 
    hls_model.compile()
 
 .. note::
-   Do not pass any precision configuration from ``hls4ml.converters.convert_from_<frontend>_model`` in general. PQuantML-defined models will invoke model-wise precision propagation automatically to ensure bit-exactness between the PQuantML model and the generated HLS code (See `here <./precision.html>`__ for more details).
+   Do not pass any precision configuration from ``hls4ml.converters.convert_from_<frontend>_model`` in general, as it may be ignored or lead to undefined behaviour! PQuantML-defined models will invoke model-wise precision propagation automatically to ensure bit-exactness between the PQuantML model and the generated HLS code (See `here <./precision.html>`__ for more details).
