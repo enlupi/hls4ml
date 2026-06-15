@@ -102,13 +102,6 @@ def add_quantizer_info(class_object, input_names, input_shapes, output_shape, la
         oq_confs = []
         oq_shapes = []
 
-    out_shapes = []
-    if iq_shapes:
-        out_shapes.append(iq_shapes)
-    out_shapes.append(output_shape)
-    if oq_shapes:
-        out_shapes.append(oq_shapes)
-
     return iq_confs + [layer] + oq_confs, iq_shapes + [output_shape] + oq_shapes
 
 
@@ -143,8 +136,6 @@ def parse_quant_activation_layer(operation, layer_name, input_names, input_shape
 
     layer['activation'] = class_object.activation_name
 
-    print(f'Parsing activation: {layer["activation"]}')
-
     layer['name'] = layer_name
     layer['inputs'] = input_names
 
@@ -157,12 +148,7 @@ def parse_quant_activation_layer(operation, layer_name, input_names, input_shape
         warn(f'Hard Tanh activation {layer_name} is currently not supported for bit-exactness.')
 
     elif layer['activation'] == 'relu' and class_object.use_multiplier:
-        raise Exception('hls4ml does not currently support activations with multiplier')
-        """
-        layer['activation'] = 'multiplier_relu'
-        layer['class_name'] = 'MultiplierReLU'
-        layer['param_data'] = class_object.multiplier.data.numpy()
-        """
+        raise NotImplementedError('hls4ml does not currently support activations with multiplier')
 
     else:
         layer['class_name'] = 'Activation'
