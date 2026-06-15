@@ -16,19 +16,13 @@ from pquant.core.keras.layers import (
 from pquant.core.keras.quantizer import Quantizer
 
 from hls4ml.converters import convert_from_keras_model
-from hls4ml.utils import config_from_keras_model
 
 test_path = Path(__file__).parent
 
 
 def _run_synth_match_test(PQmodel: keras.Model, data, io_type: str, backend: str, dir: str, cond=None, strategy='latency'):
     output_dir = dir + '/hls4ml_prj'
-    hls_config = config_from_keras_model(
-        PQmodel,
-        granularity='name',
-        default_precision='ap_fixed<32, 16>',
-        backend=backend,
-    )
+    hls_config = {'Model': {'Precision': 'fixed<1,0>', 'ReuseFactor': 1, 'Strategy': strategy}}
     hls_model = convert_from_keras_model(
         PQmodel,
         io_type=io_type,
